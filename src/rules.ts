@@ -1,40 +1,59 @@
-interface Rule {
-    symptoms: string[];
-    diagnosis: string;
+const eqSet = (xs:Set<string>, ys:Set<string>):boolean => // Compares the two sets to see if they're equal
+    xs.size === ys.size && [...xs].every((x) => ys.has(x)); // if xs and ys == same size and every element in xs is also in ys == true
+
+type Rule = {
+  propositions: any [], //array containing it's own definitions
+  logic_functions: string [], // array containing the logic definitions
+  consequent: any [], //consequence of the rule being true, which tells if the person is sick or not
+  consequent_two: any []
 }
 
-const rules: Rule[] = [
-    { symptoms: ["febre", "tosse"], diagnosis: "Gripe" },
-    { symptoms: ["tosse", "dor de garganta"], diagnosis: "Resfriado" },
-    { symptoms: ["fadiga", "tontura"], diagnosis: "Anemia" },
-    { symptoms: ["dor de cabeça", "náusea"], diagnosis: "Enxaqueca" },
-    { symptoms: ["dor abdominal", "diarreia"], diagnosis: "Gastroenterite" },
-    { symptoms: ["febre", "calafrios"], diagnosis: "Infecção" },
-    { symptoms: ["fadiga", "perda de apetite"], diagnosis: "Mononucleose" },
-    { symptoms: ["dores musculares", "febre"], diagnosis: "Dengue" },
-    { symptoms: ["tosse", "dificuldade para respirar"], diagnosis: "Bronquite" },
-    { symptoms: ["erupção cutânea", "coceira"], diagnosis: "Alergia" },
-    { symptoms: ["febre", "manchas vermelhas"], diagnosis: "Sarampo" },
-    { symptoms: ["fadiga", "inchaço nas pernas"], diagnosis: "Insuficiência cardíaca" },
-    { symptoms: ["visão embaçada", "sede excessiva"], diagnosis: "Diabetes" },
-    { symptoms: ["dor de garganta", "febre"], diagnosis: "Amigdalite" },
-    { symptoms: ["perda de cabelo", "fadiga"], diagnosis: "Deficiência de ferro" },
-    { symptoms: ["zumbido nos ouvidos", "tontura"], diagnosis: "Vertigem" },
-    { symptoms: ["tosse seca", "dor no peito"], diagnosis: "Pneumonia" },
-    { symptoms: ["febre alta", "confusão mental"], diagnosis: "Meningite" },
-    { symptoms: ["tontura", "desmaio"], diagnosis: "Pressão baixa" },
-    { symptoms: ["dor nas articulações", "rigidez"], diagnosis: "Artrite" }
-  ];
-  
+export var medical_rule: Rule = { //medical_rule that stems from Rule
+  propositions: [
+      {'name': 'temperature', 'value':37, "relation":">="}, //the definitions
+      {'name': 'headache', 'value': true, "relation":"=="}
+  ],
+  logic_functions: ['&&'], //logical function, if definition 1 && definition 2 are true then action
+  consequent: [action()], //action returns, that you are sick
+  consequent_two: [action_two()]
+}
 
-export const diagnose = (inputSymptoms: string[]): string[] => {
-    const normalizedInput = inputSymptoms.map(symptom => symptom.toLowerCase());
-  
-    const possibleDiagnoses = rules
-      .filter(rule => 
-        rule.symptoms.some(symptom => normalizedInput.includes(symptom.toLowerCase()))
-      )
-      .map(rule => rule.diagnosis);
-  
-    return possibleDiagnoses.length > 0 ? possibleDiagnoses : ["Diagnóstico desconhecido"];
-  };
+function action():string{ //action from the consequence
+  return("You are sick!");
+}
+
+function action_two(): string{
+  return("You are not sick!")
+}
+
+export function check_rule(rule: Rule,args:any [] ):any{ //function to check if the rule is true or false, in this case rule == medical_rule and args == the symptoms.
+  // rules and args have the same length
+  if(args.length == rule.propositions.length){  //if the length of the args == the propositions length then it verifies it's integrity
+      //Verify if the keys are the same      
+      let args_keys: any = new Set(); //initializes sets
+      let prop_keys: any = new Set();
+      for(let i=0; i< args.length; ++i){  //for loop, args[0] == {"temperature": 37}, args[1] == {"headache": boolean}
+          for(let j in args[i]) //j in args[0]
+              args_keys.add(j); //add j to args_keys
+          prop_keys.add(rule.propositions[i]['name']); //rule proposition[0] == "temperature" to prop_keys, rule proposition[1] == "headache"
+      }
+
+      //args_keys is going to be {"temperature", "headache"} and prop_keys is also going to be {"temperature", "headache"} but in sets, making sure that eqSet can be compared
+
+      let prop_result: boolean = false; //initializes a variable
+      if (eqSet(prop_keys, args_keys)){ //if the eqSet of the other 2 sets that were created before
+          for(let k: number=0; k < rule.propositions.length; ++k){ //counting variable
+              let prop_name: string = rule.propositions[k]['name']; // prop_name == rule.proposition[0]["name"] == "temperature"
+              if(k == 0){
+                 prop_result = eval(args[k][prop_name]+rule.propositions[k]['relation']+ rule.propositions[k]['value']); // args[0]["temperature"] == 37 + rule.proposition[0]['relation'] == >= + rule.proposition[0]['value'] == 37            
+              } else {                    
+                 prop_result = eval( prop_result.toString() + " " +  rule.logic_functions[(k-1)] +" " + args[k][prop_name]+rule.propositions[k]['relation']+ rule.propositions[k]['value']);  // prop_result.toString() == true, rule.logic_functions[(k-1)] == "&&" args[1]["headache"] == true + rule.proposition[1]['relation'] == == + rule.proposition[1]['value'] == true (true && (true == true)) > (true && true)
+              }   
+          }            
+      }
+      if (prop_result) //prop_result should be true
+          return rule.consequent[0] //return action (), which is console.log("You are sick!")
+      return rule.consequent_two[0]; //return prop_result == false
+  }
+}
+

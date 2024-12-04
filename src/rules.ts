@@ -18,6 +18,26 @@ export var medical_rule: Rule = { //medical_rule that stems from Rule
   consequent_two: [action_two()]
 }
 
+export var medical_rule2: Rule = {
+  propositions: [
+    {'name': 'cough', 'value': true, "relation": "=="},
+    {'name': 'blood', 'value': true, "relation": "=="}
+  ],
+  logic_functions: ['&&'],
+  consequent: [action()],
+  consequent_two: [action_two()]
+}
+
+export var medical_rule3: Rule = {
+  propositions: [
+    {'name': 'nausea', 'value': true, "relation": "=="},
+    {'name': 'vomit', 'value': true, "relation": "=="}
+  ],
+  logic_functions: ['||'],
+  consequent: [action()],
+  consequent_two: [action_two()]
+}
+
 function action():string{ //action from the consequence
   return("You are sick!");
 }

@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
-import { check_rule, medical_rule } from './rules';
-import './App.css'
+import { check_rule, medical_rule, medical_rule2, medical_rule3 } from './rules';
+import './App.css';
 
 const App: React.FC = () => {
   const [temperature, setTemperature] = useState<number | undefined>(undefined);
   const [headache, setHeadache] = useState<boolean | undefined>(undefined);
-  const [result, setResult] = useState<string | boolean | null>(null);
+  const [cough, setCough] = useState<boolean | undefined>(undefined);
+  const [blood, setBlood] = useState<boolean | undefined>(undefined);
+  const [nausea, setNausea] = useState<boolean | undefined>(undefined);
+  const [vomit, setVomit] = useState<boolean | undefined>(undefined);
+  
+  const [result, setResult] = useState<string | null>(null); // Alterei para um único estado de resultado
+  
   const [temperatureError, setTemperatureError] = useState<string | null>(null);
 
   const handleTemperatureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,12 +32,31 @@ const App: React.FC = () => {
       if (temperature > 100) {
         setTemperatureError("Temperature cannot be above 100.");
       } else {
-        const symptoms = [
+        const symptoms1 = [
           { temperature: temperature },
           { headache: headache }
         ];
-        const diagnosis = check_rule(medical_rule, symptoms);
-        setResult(diagnosis);
+        const diagnosis1 = check_rule(medical_rule, symptoms1);
+        
+        const symptoms2 = [
+          { cough: cough },
+          { blood: blood }
+        ];
+        const diagnosis2 = check_rule(medical_rule2, symptoms2);
+        
+        const symptoms3 = [
+          { nausea: nausea },
+          { vomit: vomit }
+        ];
+        const diagnosis3 = check_rule(medical_rule3, symptoms3);
+
+        // Verifica se qualquer um dos diagnósticos é "You are sick!"
+        if (diagnosis1 === "You are sick!" || diagnosis2 === "You are sick!" || diagnosis3 === "You are sick!") {
+          setResult("You are sick!");
+        } else {
+          setResult("You are healthy");
+        }
+
         setTemperatureError(null);
       }
     } else {
@@ -40,11 +65,8 @@ const App: React.FC = () => {
   };
 
   return (
-
     <div className='container'>
-
       <div className='pages pages1 css-selector'>
-
         <div className='alinhar'>
           <span>R</span><h1>ule-Based Diagnostic System</h1>
         </div>
@@ -59,7 +81,6 @@ const App: React.FC = () => {
           {temperatureError && <p style={{ color: 'red', padding: '0px 15px' }}>{temperatureError}</p>}
         </div>
 
-
         <div className='headache'>
           <h2>Headache:</h2>
           <select
@@ -70,24 +91,67 @@ const App: React.FC = () => {
             <option value="true">Yes</option>
             <option value="false">No</option>
           </select>
-
         </div>
-        <button onClick={handleSubmit}>Check Diagnosis</button>
 
+        <div className='cough'>
+          <h2>Cough:</h2>
+          <select
+            value={cough !== undefined ? String(cough) : ''}
+            onChange={(e) => setCough(e.target.value === 'true')}
+          >
+            <option value="">Select</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+        </div>
+
+        <div className='blood'>
+          <h2>Blood:</h2>
+          <select
+            value={blood !== undefined ? String(blood) : ''}
+            onChange={(e) => setBlood(e.target.value === 'true')}
+          >
+            <option value="">Select</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+        </div>
+
+        <div className='nausea'>
+          <h2>Nausea:</h2>
+          <select
+            value={nausea !== undefined ? String(nausea) : ''}
+            onChange={(e) => setNausea(e.target.value === 'true')}
+          >
+            <option value="">Select</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+        </div>
+
+        <div className='vomit'>
+          <h2>Vomit:</h2>
+          <select
+            value={vomit !== undefined ? String(vomit) : ''}
+            onChange={(e) => setVomit(e.target.value === 'true')}
+          >
+            <option value="">Select</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+        </div>
+
+        <button onClick={handleSubmit}>Check Diagnosis</button>
       </div>
 
       <div className='pages pages2 css-selector'>
-
         <div className='alinhar'>
-          <span>R</span><h1>esult:</h1>
+          <span>R</span><h1>esults:</h1>
           <p className={`result-text ${result === "You are sick!" ? "sick" : "healthy"}`}>
             {result}
           </p>
         </div>
-
       </div>
-
-
     </div>
   );
 };

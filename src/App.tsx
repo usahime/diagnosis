@@ -28,7 +28,14 @@ const App: React.FC = () => {
   };
 
   const handleSubmit = () => {
-    if (temperature !== undefined && headache !== undefined) {
+    if (
+      temperature !== undefined &&
+      headache !== undefined &&
+      cough !== undefined &&
+      blood !== undefined &&
+      nausea !== undefined &&
+      vomit !== undefined
+    ) {
       if (temperature > 100) {
         setTemperatureError("Temperature cannot be above 100.");
       } else {
@@ -50,6 +57,18 @@ const App: React.FC = () => {
         ];
         const diagnosis3 = check_rule(medical_rule3, symptoms3);
 
+        if (
+          headache === true &&
+          cough === true &&
+          blood === true &&
+          nausea === true &&
+          vomit === true
+        ) {
+          scroll.scrollToBottom({ duration: 1500, smooth: true });
+          setResult(null);
+          return;
+        }
+
         if (diagnosis1 === "You are sick!" || diagnosis2 === "You are sick!" || diagnosis3 === "You are sick!") {
           setResult("You are sick!");
         } else {
@@ -57,7 +76,6 @@ const App: React.FC = () => {
         }
 
         setTemperatureError(null);
-        // Navegar para a página de resultados
         scroll.scrollToBottom({ duration: 1500, smooth: true });
       }
     } else {
@@ -84,6 +102,7 @@ const App: React.FC = () => {
             {temperatureError && <p style={{ color: 'red', padding: '0px 15px' }}>{temperatureError}</p>}
           </div>
 
+          {/* Inputs de sintomas */}
           <div className='headache'>
             <h2>Headache:</h2>
             <select
@@ -157,7 +176,17 @@ const App: React.FC = () => {
               {result}
             </p>
           </div>
-          <button onClick={() => scroll.scrollToTop( { duration: 1500, smooth: true  } )}>Back to Diagnosis</button>
+          <button onClick={() => scroll.scrollToTop({ duration: 1500, smooth: true })}>Back to Diagnosis</button>
+        </div>
+      </Element>
+
+      {/* Página 3 */}
+      <Element name="page3">
+        <div className='pages pages3 css-selector'>
+          <div className='alinhar'>
+            <span>C</span><h1 className='h11'>AVEIRA</h1>
+          </div>
+          <button onClick={() => scroll.scrollToTop({ duration: 1500, smooth: true })}>Back to Diagnosis</button>
         </div>
       </Element>
     </div>

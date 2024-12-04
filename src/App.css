@@ -225,3 +225,29 @@ button:disabled {
     text-shadow: 2px 2px 4px #000000;
     padding: 0px 30px;
 }
+
+.pages3 {
+    background: url('../public/caveira.jpg') no-repeat center center;
+    background-size: cover;
+    color: white;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    filter: drop-shadow(2px 4px 6px black);
+}
+
+.pages3 {
+    background: url('../public/caveira2.jpg') no-repeat center center;
+    background-size: cover;
+    color: white;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    filter: drop-shadow(2px 4px 6px black);
+}
